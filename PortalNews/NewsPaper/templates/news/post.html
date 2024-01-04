@@ -1,0 +1,27 @@
+{% extends 'flatpages/default.html' %}
+
+{% load censor_filter %}
+
+{% block title %}
+Post
+{% endblock title %}
+
+{% block content %}
+
+<div style="margin: 2% 5% 2% 5%; padding: 10px; text-align: left">
+    <h1 style="text-align: left;">{{ post.title|censor }}</h1>
+    <hr>
+    <!-- Строка рейтинга и даты публикации, расставленные по левому и правому краю соответственно -->
+    <div style="width: 100%; height: 30px; text-align: right">
+        <span style="float: left">
+            <!-- Левая сторона -->
+            <h6>Рейтинг: {{ post.rating }}</h6>
+        </span>
+            <!-- Правая сторона -->
+            <h6>{{ post.date_of_creation }}</h6>
+    </div>
+    <span style=>{{ post.text|censor }}</span>
+    <h6 style="text-align: right"><i>©{{ post.author }}</i></h6>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,61 @@
+from news.models import *
+
+u1 = User.objects.create_user('username1')
+u2 = User.objects.create_user('username2')
+
+a1 = Author.objects.create(user=u1)
+a2 = Author.objects.create(user=u2)
+
+c1 = Category.objects.create(category="Образование")
+c2 = Category.objects.create(category="Автомобили")
+c3 = Category.objects.create(category="Лайфхаки")
+c4 = Category.objects.create(category="История")
+c5 = Category.objects.create(category="Культура")
+
+art1 = Post.objects.create(title="Как жилось на руси", text="Давным-давно, в 3/9 царстве, 3/9 государстве пришли Рюриковичи. И вообще здесь очень много текста, чтобы понимать как, отрабатывает метод сокращения текста", author=a1, type_post="ART")
+art2 = Post.objects.create(title="Как настроить карбюратор в 2023 году", text="Владельцам карбюраторных машин посвящается. Сегодня редко можно встретить автомобили с карбюраторами. Однако, что же делать если у вас такой есть, то просто возьмите старый дедовский...", author=a2, type_post="ART")
+news1 = Post.objects.create(title="Открылась новая школа", text="Очередная школа открылась в Высокогорском районе. На открытие приехал Президент Республики Татарстан, Рустем Нургалиевич", author=a1)
+
+art1.categories.add(c4, c5)
+art2.categories.add(c2, c3)
+news1.categories.add(c1)
+
+u3 = User.objects.get(pk=1)  # Это я суперпользователя сюда закинул для количества
+
+com1 = Comment.objects.create(comment="Да я жил на руси. Не было там такого! Автор чушь городит", post=art1, user=u3)
+com2 = Comment.objects.create(comment="Да как ты там жить то мог? Чё ты нам по ушам то ездишь?) Мне вот бабка рассказывала, как они царя встречали у себя в деревне", post=art1, user=u1)
+com3 = Comment.objects.create(comment="Да-а-а-а. У кого-то вообще карбюратор ещё остался?) Это же прошлый век!", post=art2, user=u2)
+com4 = Comment.objects.create(comment="Ууу. Население то растёт. В нашей школе уже в две смены учатся. И это с учётом того, что часть учеников перевели в новые школы", post=news1, user=u1)
+
+com1.dislike()
+
+# Число в скобках - это чтобы было удобнее начислять кол-во лайков/дизлайков.
+# Если скобки пустые, то будет 1 лайк/дизлайк
+com1.dislike(1327)
+com2.like(342)
+com3.like(298)
+com4.like(1254)
+
+art1.like(789)
+art2.like(999129)
+news1.like(128)
+
+a1.update_rating()
+a2.update_rating()
+
+best_user = Author.objects.order_by("-rating").values_list("user__username", "rating")[0]
+usnm, rt = best_user
+f'Топ рейтинг у автора с ником {usnm}! Его рейтинг составляет {rt}'
+
+best_post = Post.objects.order_by("-rating")
+bp = best_post.values_list("date_of_creation", "author__user__username", "rating", "title")[0]
+db, ab, rb, tb = bp
+best_text = best_post[0].preview()
+db = db.strftime("%Y-%m-%d %H:%M")
+print(f'\nСтатья с наивысшим рейтингом! \nОпубликована: {db}, \nавтор: {ab} \nрейтинг статьи: {rb} \n\n{tb} \n{best_text}')
+
+top_comments = Comment.objects.filter(post=best_post[0]).values_list("date_of_writing", "user__username", "rating", "comment")
+for i in top_comments:
+    date, user, rate, text = i
+    date = date.strftime("%Y-%m-%d %H:%M")
+    print(f'\n{date} {user} \n{text} \n{rate}')

@@ -1,0 +1,16 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+    <h1>Свежие новости и статьи</h1>
+    {% if news_of_the_day %}
+        <h3>Новость дня!</h3>
+    {% endif %}
+    <hr>
+
+    {% include 'news/skeleton_posts_table.html' %}
+
+{% endblock content %}
