@@ -1,3 +1,6 @@
 .idea/
 venv/
 d3project/db.sqlite3
+env/
+.env
+d3project/.env
