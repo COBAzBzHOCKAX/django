@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
     # My app
     'simpleapp',
+    'accounts',
     'django_filters',
 ]
 
@@ -158,14 +159,21 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_FORMS = {"signup": "accounts.forms.CustomSignupForm"}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = os.getenv('EMAIL')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = os.getenv('EMAIL_MAIL_RU')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_MAIL_RU_PASSWORD')
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-DEFAULT_FROM_EMAIL = os.getenv('EMAIL')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_MAIL_RU')
+
+EMAIL_SUBJECT_PREFIX = '[Менеджеры]'
+SERVER_EMAIL = "djangov@inbox.ru"
+MANAGERS = (
+    ('Ivan', 'mixeev.danila@yandex.ru'),
+    ('Petr', 'mixeev.danila@gmail.com')
+)

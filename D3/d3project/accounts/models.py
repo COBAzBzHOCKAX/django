@@ -1,3 +1,16 @@
+from django.contrib.auth.models import User
 from django.db import models
+from ..simpleapp.models import Category
 
-# Create your models here.
+
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        related_name='subscription',
+    )
+    category = models.ForeignKey(
+        to='Category',
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+    )
