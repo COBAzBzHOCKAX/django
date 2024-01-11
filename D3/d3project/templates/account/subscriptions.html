@@ -10,7 +10,7 @@ Subscriptions
             {{ category.name }}
             <form method="post">
                 {% csrf_token %}
-                <input type="hidden" name="category_id" value="{{ category.id " />
+                <input type="hidden" name="category_id" value="{{ category.id }}" />
 
                 {% if category.user_subscribed %}
                     <button disabled>Подписаться</button>
@@ -22,4 +22,5 @@ Subscriptions
             </form>
         </p>
     {% endfor %}
+
 {% endblock content %}

@@ -2,3 +2,4 @@ Django
 django-filter
 django-allauth
 python-dotenv
+django-apscheduler

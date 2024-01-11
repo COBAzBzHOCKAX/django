@@ -11,6 +11,10 @@ Posts
     {% endif %}
     <hr>
 
+    {% if perms.news.add_post %}
+    <a href="{% url 'news_create' %}">Создать новость</a>
+    <a href="{% url 'articles_create' %}">Создать статью</a>
+    {% endif %}
     {% include 'news/skeleton_posts_table.html' %}
 
 {% endblock content %}

@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
-from ..simpleapp.models import Category
+from simpleapp.models import Category
 from .models import Subscription
 
 

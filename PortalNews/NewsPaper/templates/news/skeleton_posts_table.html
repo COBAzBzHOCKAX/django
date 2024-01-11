@@ -31,6 +31,28 @@
                     <tr>
                         <td style="text-align: right"><i>©{{ post.author }}</i></td>
                     </tr>
+
+                    {% if perms.news.change_post or perms.news.delete_post %}
+                    <tr>
+                        <td style="text-align: right">
+                            {% if perms.news.change_post %}
+                                {% if post.type_post == "NWS" %}
+                                <a href="{% url 'news_update' post.id %}">Править новость</a>
+                                {% elif post.type_post == "ART" %}
+                                <a href="{% url 'articles_update' post.id %}">Править статью</a>
+                                {% endif %}
+                            {% endif %}
+
+                            {% if perms.news.delete_post %}
+                                {% if post.type_post == "NWS" %}
+                                <a href="{% url 'news_delete' post.id %}">Удалить новость</a>
+                                {% elif post.type_post == "ART" %}
+                                <a href="{% url 'articles_delete' post.id %}">Удалить статью</a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
                 </div>
             </table>
         </div>
