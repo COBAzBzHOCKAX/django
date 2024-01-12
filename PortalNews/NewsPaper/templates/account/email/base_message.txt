@@ -1,0 +1,7 @@
+{% load i18n %}{% autoescape off %}{% blocktrans with site_name=current_site.name %}{% endblocktrans %}
+
+{% block content %}{% endblock content %}
+
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}С уважением команда сервиса "ПЕРВЫЙ новостной"! {{ site_name }}!
+{{ site_domain }}{% endblocktrans %}
+{% endautoescape %}

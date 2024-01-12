@@ -1,0 +1,11 @@
+{% extends "account/email/base_message.txt" %}
+{% load account %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% user_display user as user_display %}{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Добро пожаловать на "ПЕРВЫЙ новостной". {{ user_display }}, вы почти закончили регистрацию на нашем сайте {{ site_domain }}.
+
+Чтобы завершить регистрацию, перейдите по ссылке: {{ activate_url }}
+
+Свежие новости уже ждут вас!
+{% endblocktrans %}{% endautoescape %}
+{% endblock content %}

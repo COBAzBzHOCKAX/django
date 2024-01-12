@@ -1,6 +1,12 @@
 .idea/
 venv/
-d3project/db.sqlite3
-env/
 .env
-d3project/.env
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
+static
