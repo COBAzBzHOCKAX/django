@@ -54,10 +54,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.yandex',
 
     # My apps
-    'news',
     'accounts',
-    'django_filters',
+    'news',
     'subscriptions',
+    'django_filters',
+    'django_apscheduler',
 ]
 
 SITE_ID = 1
@@ -179,3 +180,5 @@ EMAIL_USE_SSL = False
 DEFAULT_FROM_EMAIL = os.getenv('HOST_EMAIL_MAIL_RU')
 
 SERVER_EMAIL = 'HOST_EMAIL_MAIL_RU'
+
+

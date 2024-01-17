@@ -1,0 +1,12 @@
+Новости и статьи за прошедшую неделю!
+
+{% for post in unique_posts %}
+-------------------------------
+{{ post.title }}
+Автор: {{ post.author.user.username }}
+Опубликовано: {{ post.date_of_creation|date:"j F Y, H:i" }}
+-------------------------------
+{{ post.preview }}
+Читать подробнее: {{ post.get_absolute_url }}
+-------------------------------
+{% endfor %}

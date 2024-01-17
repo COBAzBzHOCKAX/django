@@ -70,6 +70,14 @@ class Post(models.Model):
     def preview(self):
         return f'{self.text[:124]}...'
 
+    def get_absolute_url(self):
+        if self.type_post == 'NWS':
+            return reverse('news_detail', kwargs={'pk': self.pk})
+        elif self.type_post == 'ART':
+            return reverse('articles_detail', kwargs={'pk': self.pk})
+        else:
+            return reverse('posts')
+
 
 class PostCategory(models.Model):  # модель для связи мн-к-мн
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
