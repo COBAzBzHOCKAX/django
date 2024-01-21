@@ -1,11 +1,12 @@
 import logging
-from datetime import timedelta, timezone, datetime
+from datetime import timedelta
+
+from django.utils import timezone
 
 from django.conf import settings
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
-from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
@@ -13,50 +14,45 @@ from django_apscheduler.jobstores import DjangoJobStore
 from django_apscheduler.models import DjangoJobExecution
 from django_apscheduler import util
 
-from news.models import Category, Post
+from news.models import Post
 from subscriptions.models import SubscriptionCategories
 
 logger = logging.getLogger(__name__)
 
 
 def send_weekly_newsletter():
-    now = datetime.now()
-    last_week_start = now - timedelta(days=now.weekday() + 7)
-    last_week_end = now - timedelta(days=now.weekday() + 1)
+    today = timezone.now()
+    last_week = today - timedelta(days=7)
+    posts = Post.objects.filter(date_of_creation__gte=last_week).order_by('-date_of_creation')
+    categories = set(posts.values_list('categories__id', flat=True))
+    subscribers_emails = set(
+        SubscriptionCategories.objects.filter(category__id__in=categories).values_list('user__email', flat=True)
+    )
 
-    subscriptions = SubscriptionCategories.objects.all()
+    for subscriber_email in subscribers_emails:
+        subscriptions_to_categories = SubscriptionCategories.objects.filter(user__email=subscriber_email)
+        list_subscriptions_to_categories = set(subscriptions_to_categories.values_list('category', flat=True))
+        # Посты без повторов для пользователя, соответствующий подпискам на категории
+        subscribed_posts = posts.filter(postcategory__category__in=list_subscriptions_to_categories).distinct()
 
-    unique_posts_by_category = {}
 
-    for subscription in subscriptions:
-        user = subscription.user
-        categories = Category.objects.filter(subscriptions=subscription)
-
-        news_by_category = {}
-        for category in categories:
-            # Получаем все посты за прошедшую неделю для каждой категории
-            posts = Post.objects.filter(
-                categories__category=category,
-                date_of_creation__range=[last_week_start, last_week_end]
-            ).distinct()  # получаем уникальный список постов
-
-            unique_posts_by_category.update({post.id: post for post in posts})
-
-    if unique_posts_by_category:
         subject = 'ПЕРВЫЙ новостной | Новости и статьи за прошедшую неделю по вашим подпискам'
         from_email = None
-        to_email = [user.email]
+        to_email = subscriber_email
 
-        unique_posts = list(unique_posts_by_category.values())
+        text_content = render_to_string(
+            'subscriptions/weekly_newsletter_email.txt',
+            {'subscribed_posts': subscribed_posts, 'link': settings.SITE_URL}
+        )
+        html_content = render_to_string(
+            'subscriptions/weekly_newsletter_email.html',
+            {'subscribed_posts': subscribed_posts, 'link': settings.SITE_URL}
+        )
 
-        unique_posts.sort(key=lambda x: x.date_of_creation, reverse=True)
-
-        text_content = render_to_string('subscriptions/weekly_newsletter_email.txt', {'unique_posts': unique_posts})
-        html_content = render_to_string('subscriptions/weekly_newsletter_email.html', {'unique_posts': unique_posts})
-
-        msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
         msg.attach_alternative(html_content, 'text/html')
         msg.send()
+
 
 
 # The `close_old_connections` decorator ensures that database connections, that have become

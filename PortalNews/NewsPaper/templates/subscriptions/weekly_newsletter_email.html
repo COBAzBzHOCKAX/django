@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
 <body>
     <h1>Новости и статьи за прошедшую неделю!</h1>
 
-    {% for post in unique_posts %}
+    {% for post in subscribed_posts %}
         <div style="margin-bottom: 20px;">
             <h2>{{ post.title }}</h2>
             <p>
@@ -17,8 +17,9 @@
                 {{ post.preview }}
             </p>
             <p>
-                <a href="{{ post.get_absolute_url }}">Читать подробнее...</a>
+                <a href="{{ link }}{{ post.get_absolute_url }}">Читать подробнее...</a>
             </p>
+            </br>
         </div>
     {% endfor %}
 
