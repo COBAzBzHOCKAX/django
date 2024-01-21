@@ -54,7 +54,6 @@ def send_weekly_newsletter():
         msg.send()
 
 
-
 # The `close_old_connections` decorator ensures that database connections, that have become
 # unusable or are obsolete, are closed before and after your job has run. You should use it
 # to wrap any jobs that you schedule that access the Django database in any way.
@@ -80,13 +79,13 @@ class Command(BaseCommand):
 
         scheduler.add_job(
             send_weekly_newsletter,
-            # trigger=CronTrigger(second="0 18 * * 4"),  # Каждую пятницу в 18:00
-            trigger=CronTrigger(second="*/10"),
-            id="my_job",  # The `id` assigned to each job MUST be unique
+            trigger=CronTrigger(hour='18', minute='00', second='00', day_of_week='fri', timezone=settings.TIME_ZONE),
+            # Каждую пятницу в 18:00
+            id="send_weekly_newsletter",  # The `id` assigned to each job MUST be unique
             max_instances=1,
             replace_existing=True,
         )
-        logger.info("Added job 'my_job'.")
+        logger.info("Added job 'send_weekly_newsletter'.")
 
         scheduler.add_job(
             delete_old_job_executions,

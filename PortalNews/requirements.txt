@@ -1,5 +1,5 @@
 Django>=5.0
 django-filter
 django-allauth
-django-dotenv
+python-dotenv
 django-apscheduler
