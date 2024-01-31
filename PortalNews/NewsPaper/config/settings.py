@@ -170,7 +170,6 @@ ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignupForm'}
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
 EMAIL_HOST_USER = os.getenv('HOST_EMAIL_MAIL_RU')
@@ -182,4 +181,5 @@ DEFAULT_FROM_EMAIL = os.getenv('HOST_EMAIL_MAIL_RU')
 
 SERVER_EMAIL = 'HOST_EMAIL_MAIL_RU'
 
-
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

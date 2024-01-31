@@ -2,11 +2,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 from .forms import ProductForm
 from .models import Product
 from .filters import ProductFilter
+from .tasks import hello, printer
 
 
 class ProductsList(ListView):
@@ -96,3 +98,10 @@ class ProductDelete(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'product_delete.html'
     success_url = reverse_lazy('product_list')
+
+
+class IndexView(View):
+    def get(self, request):
+        printer.apply_async([10], countdown=5)
+        hello.delay()
+        return HttpResponse('Hello!')
