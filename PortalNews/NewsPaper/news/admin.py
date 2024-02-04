@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Author, Post, Comment, Category, PostCategory
-from news.tasks import notifier
+from subscriptions.tasks import notifier
 
 
 class PostCategoryInline(admin.TabularInline):

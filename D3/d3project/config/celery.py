@@ -17,7 +17,7 @@ def debug_task(self):
     print(f'Request: {self.request!r}')
 
 
-app.conf.beat_shedule = {
+app.conf.beat_schedule = {
     'print_every_5_seconds': {
         'task': 'simpleapp.tasks.printer',
         'schedule': 5,
