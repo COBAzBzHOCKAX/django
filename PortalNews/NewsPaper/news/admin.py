@@ -17,7 +17,7 @@ class PostAdmin(admin.ModelAdmin):
 
             for instance in instances:
                 instance.save()
-                notifier(instance)
+                notifier.delay(instance.pk)
                 break
             formset.save_m2m()
         else:

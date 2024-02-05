@@ -1,9 +1,15 @@
+from celery import shared_task
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
 
+from config import settings
+from news.models import Post
+from subscriptions.management.commands.runapscheduler import send_weekly_newsletter
 
-def notifier(arg):
-    instance = arg.post
+
+@shared_task
+def notifier(arg_id):
+    instance = Post.objects.get(id=arg_id)
     emails = User.objects.filter(
         subscriptions__category__in=instance.categories.all()
     ).values_list('email', flat=True)
@@ -23,7 +29,11 @@ def notifier(arg):
         f'ПЕРВОМ новостном</a>'
     )
     for email in emails:
-        msg = EmailMultiAlternatives(subject, text_content, None, [email])
+        msg = EmailMultiAlternatives(subject, text_content, settings.DEFAULT_FROM_EMAIL, [email])
         msg.attach_alternative(html_content, "text/html")
         msg.send()
 
+
+@shared_task
+def send_weekly_digest():
+    send_weekly_newsletter()
