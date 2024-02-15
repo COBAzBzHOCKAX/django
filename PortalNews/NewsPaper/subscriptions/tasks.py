@@ -1,10 +1,14 @@
+from datetime import timedelta
+
 from celery import shared_task
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils import timezone
 
 from config import settings
 from news.models import Post
-from subscriptions.management.commands.runapscheduler import send_weekly_newsletter
+from subscriptions.models import SubscriptionCategories
 
 
 @shared_task
@@ -36,4 +40,34 @@ def notifier(arg_id):
 
 @shared_task
 def send_weekly_digest():
-    send_weekly_newsletter()
+    today = timezone.now()
+    last_week = today - timedelta(days=7)
+    posts = Post.objects.filter(date_of_creation__gte=last_week).order_by('-date_of_creation')
+    categories = set(posts.values_list('categories__id', flat=True))
+    subscribers_emails = set(
+        SubscriptionCategories.objects.filter(category__id__in=categories).values_list('user__email', flat=True)
+    )
+
+    for subscriber_email in subscribers_emails:
+        subscriptions_to_categories = SubscriptionCategories.objects.filter(user__email=subscriber_email)
+        list_subscriptions_to_categories = set(subscriptions_to_categories.values_list('category', flat=True))
+        # Посты без повторов для пользователя, соответствующий подпискам на категории
+        subscribed_posts = posts.filter(postcategory__category__in=list_subscriptions_to_categories).distinct()
+
+
+        subject = 'ПЕРВЫЙ новостной | Новости и статьи за прошедшую неделю по вашим подпискам'
+        from_email = None
+        to_email = subscriber_email
+
+        text_content = render_to_string(
+            'subscriptions/weekly_newsletter_email.txt',
+            {'subscribed_posts': subscribed_posts, 'link': settings.SITE_URL}
+        )
+        html_content = render_to_string(
+            'subscriptions/weekly_newsletter_email.html',
+            {'subscribed_posts': subscribed_posts, 'link': settings.SITE_URL}
+        )
+
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to_email])
+        msg.attach_alternative(html_content, 'text/html')
+        msg.send()
