@@ -1,11 +1,13 @@
 from django.contrib import admin
-from .models import Author, Post, Comment, Category, PostCategory
 from subscriptions.tasks import notifier
+
+from .models import Author, Category, Comment, Post, PostCategory
 
 
 class PostCategoryInline(admin.TabularInline):
     model = PostCategory
     extra = 1
+
 
 class PostAdmin(admin.ModelAdmin):
     model = Post

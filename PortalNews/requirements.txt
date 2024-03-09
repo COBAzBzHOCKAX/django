@@ -9,3 +9,4 @@ celery
 flake8
 flake8-import-order
 flake8_docstrings
+mypy

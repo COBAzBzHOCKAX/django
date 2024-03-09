@@ -1,7 +1,7 @@
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
-
 from news.models import PostCategory
+
 from .tasks import notifier
 
 
@@ -9,4 +9,3 @@ from .tasks import notifier
 def post_created(instance, **kwargs):
     if kwargs['action'] == 'post_add':
         notifier.delay(instance.pk)
-

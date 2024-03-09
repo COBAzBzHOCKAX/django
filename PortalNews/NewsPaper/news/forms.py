@@ -6,6 +6,7 @@ from .models import Post
 
 class NewsForm(forms.ModelForm):
     text = forms.CharField(min_length=20)
+
     class Meta:
         model = Post
         fields = [
@@ -28,6 +29,7 @@ class NewsForm(forms.ModelForm):
 
 class ArticlesForm(forms.ModelForm):
     text = forms.CharField(min_length=20)
+
     class Meta:
         model = Post
         fields = [
@@ -50,6 +52,7 @@ class ArticlesForm(forms.ModelForm):
 
 class UpdateForm(forms.ModelForm):
     text = forms.CharField(min_length=20)
+
     class Meta:
         model = Post
         fields = [
@@ -68,5 +71,3 @@ class UpdateForm(forms.ModelForm):
             })
 
         return cleaned_data
-
-

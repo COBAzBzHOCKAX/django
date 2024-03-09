@@ -2,10 +2,11 @@ from datetime import datetime
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import *
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+
 from .filters import PostFilter
-from .forms import NewsForm, ArticlesForm, UpdateForm
+from .forms import ArticlesForm, NewsForm, UpdateForm
+from .models import *  # noqa F403
 
 # Быстрые настройки страничек
 PAGINATE_BY = 10  # Количество записей на странице
@@ -63,20 +64,16 @@ class ArticleDetail(DetailView):
         return obj
 
 
-
-
 class PostSearch(ListView):
     queryset = Post.objects.order_by('-date_of_creation')
     template_name = 'news/post_search.html'
     context_object_name = 'posts'
     paginate_by = PAGINATE_BY
 
-
     def get_queryset(self):
         queryset = super().get_queryset()
         self.filterset = PostFilter(self.request.GET, queryset)
         return self.filterset.qs
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
-
 from news.models import Category
 from subscriptions.models import SubscriptionCategories
 

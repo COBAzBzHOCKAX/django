@@ -1,12 +1,11 @@
 from datetime import timedelta
 
 from celery import shared_task
+from config import settings
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils import timezone
-
-from config import settings
 from news.models import Post
 from subscriptions.models import SubscriptionCategories
 
@@ -53,7 +52,6 @@ def send_weekly_digest():
         list_subscriptions_to_categories = set(subscriptions_to_categories.values_list('category', flat=True))
         # Посты без повторов для пользователя, соответствующий подпискам на категории
         subscribed_posts = posts.filter(postcategory__category__in=list_subscriptions_to_categories).distinct()
-
 
         subject = 'ПЕРВЫЙ новостной | Новости и статьи за прошедшую неделю по вашим подпискам'
         from_email = None
