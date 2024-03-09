@@ -1,6 +1,11 @@
 Django>=5.0
 django-filter
-django-allauth
-python-dotenv
+django-allauth  # implementation of authentication via yandex
+python-dotenv  # file.env with confidential service data
 django-apscheduler
 celery
+
+# pip packages for code verification. The configuration file .flake8
+flake8
+flake8-import-order
+flake8_docstrings

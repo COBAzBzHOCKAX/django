@@ -194,6 +194,6 @@ CELERY_RESULT_SERIALIZER = 'json'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': os.path.join(BASE_DIR, 'cache_files'),
+        'LOCATION': os.path.join(BASE_DIR, 'config/cache_files'),
     }
 }

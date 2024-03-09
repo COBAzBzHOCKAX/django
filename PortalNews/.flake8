@@ -1,0 +1,7 @@
+[flake8]
+max-line-length = 154
+exclude = .git, */__pycache__/, */migrations/, urls.py, NewsPaper/manage.py, .idea/, venv/, local_settings.py, */cache_files/
+
+application-import-names = NewsPaper
+
+import-order-style = google

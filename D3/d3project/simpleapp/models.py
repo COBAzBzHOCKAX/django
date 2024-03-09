@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.urls import reverse
@@ -29,6 +30,13 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.name.title()}: {self.description[:20]}'
+
+    def get_absolute_utl(self):
+        return f'/products/{self.id}'
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(f'product-{self.pk}')
 
 
 class Material(models.Model):

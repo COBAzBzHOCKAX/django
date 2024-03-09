@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -56,8 +57,12 @@ class Post(models.Model):
     categories = models.ManyToManyField(Category, through="PostCategory")  # связь мн-к-мн с моделью Category
 
     def __str__(self):
-        return f'{self.date_of_creation.strftime("%Y-%m-%d %H:%M")}  |  {self.title}  |  Автор: {User.objects.get(pk=self.author.pk)}  |  рейтинг: {self.rating}'
-
+        return (
+            f'{self.date_of_creation.strftime("%Y-%m-%d %H:%M")}  |  '
+            f'{self.title}  |  '
+            f'Автор: {User.objects.get(pk=self.author.pk)}  |  '
+            f'рейтинг: {self.rating}'
+        )
 
     def like(self, x=1):
         self.rating += x
@@ -77,6 +82,10 @@ class Post(models.Model):
             return reverse('articles_detail', kwargs={'pk': self.pk})
         else:
             return reverse('posts')
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        cache.delete(f'post-{self.pk}')
 
 
 class PostCategory(models.Model):  # модель для связи мн-к-мн

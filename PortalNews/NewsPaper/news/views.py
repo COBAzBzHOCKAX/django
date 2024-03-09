@@ -29,7 +29,7 @@ class PostsList(ListView):
         return context
 
 
-class PostDetail(DetailView):
+class NewsDetail(DetailView):
     model = Post
     template_name = 'news/post.html'
     context_object_name = 'post'
@@ -37,6 +37,13 @@ class PostDetail(DetailView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(type_post='NWS')
+
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+        return obj
 
 
 class ArticleDetail(DetailView):
@@ -47,6 +54,13 @@ class ArticleDetail(DetailView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.filter(type_post='ART')
+
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post-{self.kwargs["pk"]}', None)
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post-{self.kwargs["pk"]}', obj)
+        return obj
 
 
 
