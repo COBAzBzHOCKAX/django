@@ -47,6 +47,11 @@ class NewsDetail(DetailView):
         return obj
 
 
+# Yes, there really is a repetition of the code with the previous representation.
+# This is required to split posts with news and articles into two different addresses.
+# Due to this, we get the format path:
+#   -for news "http://<SITE_URL>/news/<pk>/"
+#   -for the article "http://<SITE_URL>/articles/<pk>/"
 class ArticleDetail(DetailView):
     model = Post
     template_name = 'news/post.html'

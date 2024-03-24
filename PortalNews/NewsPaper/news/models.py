@@ -75,6 +75,10 @@ class Post(models.Model):
     def preview(self):
         return f'{self.text[:124]}...'
 
+    @property
+    def short_description(self):
+        return f'{self.text[:30]}...'
+
     def get_absolute_url(self):
         if self.type_post == 'NWS':
             return reverse('news_detail', kwargs={'pk': self.pk})

@@ -12,7 +12,7 @@ class Product(models.Model):
     )
     description = models.TextField()
     quantity = models.IntegerField(
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0, 'Quantity should be >= 0')],
     )
     # поле категории будет ссылаться на модель категории
     category = models.ForeignKey(
@@ -21,12 +21,16 @@ class Product(models.Model):
         related_name='products', # все продукты в категории будут доступны через поле products
     )
     price = models.FloatField(
-        validators=[MinValueValidator(0.0)],
+        validators=[MinValueValidator(0.0, 'Price should be >= 0.0')],
     )
 
 
     def get_absolute_url(self):
         return reverse('product_detail', args=[str(self.id)])
+
+    @property
+    def on_stock(self):
+        return self.quantity > 0
 
     def __str__(self):
         return f'{self.name.title()}: {self.description[:20]}'

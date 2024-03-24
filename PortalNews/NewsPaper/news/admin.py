@@ -10,6 +10,13 @@ class PostCategoryInline(admin.TabularInline):
 
 
 class PostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'date_of_creation', 'short_description', 'author', 'type_post', 'post_category')
+    list_filter = ('type_post', 'categories__category', 'date_of_creation')
+    search_fields = ('title', 'categories__category', 'author__user__username')
+
+    def post_category(self, post):
+        return ", ".join(cat.category for cat in post.categories.all())
+
     model = Post
     inlines = (PostCategoryInline,)
 
